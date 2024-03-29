@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5 Canvas</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            max-width: 100vw;
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #draw {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <div>
+            <input id="snakebox" type="checkbox" />Create snake
+            <input type="range" id="lineRange"> Line width
+            <button id="eraseButton">Erase</button> 
+        </div>
+
+        <canvas id="draw" width="800" height="500"></canvas>
+    </div>
+    <script>
+        const canvas = document.getElementById("draw");
+        const ctx = canvas.getContext("2d");
+        ctx.strokeStyle = '#BADA55';
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        let isDrawing = false;
+        let lastx = 0;
+        let lasty = 0;
+        let hue = 0;
+        let saturation = 100;
+        let lightness = 50;
+        let lineWidth = 5; // Default line width
+
+        const rangebutton = document.getElementById("lineRange");
+        rangebutton.addEventListener('change', (e) => {
+            lineWidth = e.target.value;
+        });
+
+        const createsnake = document.getElementById('snakebox');
+        const CreateSnake = () => {
+            saturation = Math.floor(Math.random() * 100) + 1 || 100;
+            lightness = Math.floor(Math.random() * 100) + 1;
+        };
+
+        function draw(e) {
+            if (createsnake.checked) {
+                CreateSnake();
+            }
+            if (!isDrawing) return;
+            ctx.beginPath();
+            ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            ctx.moveTo(lastx, lasty);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            ctx.lineWidth = lineWidth;
+            [lastx, lasty] = [e.offsetX, e.offsetY];
+            hue++;
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastx, lasty] = [e.offsetX, e.offsetY];
+        });
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+
+        // Event listener for the Erase button
+        const eraseButton = document.getElementById("eraseButton");
+        eraseButton.addEventListener("click", () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        });
+    </script>
+</body>
+
+</html>
