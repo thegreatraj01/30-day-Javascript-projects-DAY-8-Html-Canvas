@@ -37,7 +37,8 @@
         <div>
             <input id="snakebox" type="checkbox" />Create snake
             <input type="range" id="lineRange"> Line width
-            <button id="eraseButton">Erase</button> 
+            <button id="eraseButton">Erase</button>
+            <button id="downloadButton">Download Canvas</button> <!-- Added download button -->
         </div>
 
         <canvas id="draw" width="800" height="500"></canvas>
@@ -96,6 +97,18 @@
         const eraseButton = document.getElementById("eraseButton");
         eraseButton.addEventListener("click", () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        });
+
+        // Event listener for the Download button
+        const downloadButton = document.getElementById("downloadButton");
+        downloadButton.addEventListener("click", () => {
+            const dataUrl = canvas.toDataURL("image/png");
+            const a = document.createElement("a");
+            a.href = dataUrl;
+            a.download = "canvas_image.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         });
     </script>
 </body>
